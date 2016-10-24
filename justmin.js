@@ -52,20 +52,11 @@ var app = {
 		canvas.load ();
 	},
 
-	object: {
-		test: {
-			mousedown: function () {
-				window.console.log ('test');
-			}
-		}
-	},
+	object: {},
 
-	update: function (event)
-	{
-		for (let id in app.object)
-		{
-			for (let method in app.object[id])
-			{
+	update: function (event) {
+		for (let id in app.object) {
+			for (let method in app.object[id]) {
 				if (method == event.type) { app.object[id][method] (event); }
 			}
 		}
