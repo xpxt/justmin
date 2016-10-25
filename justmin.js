@@ -47,6 +47,22 @@ var canvas = window.document.createElement ('canvas');
 var context = canvas.getContext ('2d');
 
 var app = {
+
+	create: {
+		object: function (_) {
+			let object = _ || {};
+				object.id = _.id || app.id++;
+
+				object.load = function () {
+					app.object[object.id] = object;
+				}
+
+			return object;
+		}
+	},
+
+	id: 0,
+
 	load: function () {
 		window.load (app.update);
 		canvas.load ();
