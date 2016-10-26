@@ -49,6 +49,18 @@ var context = canvas.getContext ('2d');
 var app = {
 
 	create: {
+		box: function (_) {
+			let box = app.create.object (_);
+				box.fill = _.fill || 'transparent';
+
+				box.draw = function () {
+					context.fillStyle = box.fill;
+					context.fillRect (box.x, box.y, box.w, box.h);
+				}
+
+			return box;
+		},
+
 		object: function (_) {
 			let object = _ || {};
 				object.id = _.id || app.id++;
@@ -61,14 +73,23 @@ var app = {
 		}
 	},
 
+	draw: function () {
+		for (let id in app.object) {
+			app.object[id].draw ();
+		}
+	},
+
 	id: 0,
 
 	load: function () {
 		window.load (app.update);
 		canvas.load ();
+		app.scene.load ();
 	},
 
 	object: {},
+
+	scene: { load: function () {} },
 
 	update: function (event) {
 		for (let id in app.object) {
@@ -80,3 +101,15 @@ var app = {
 }
 
 window.onload = app.load;
+
+app.scene.load = function () {
+	app.create.box ({
+		fill: '#000',
+		h: 100,
+		x: 100,
+		y: 100,
+		w: 100,
+	}).load ();
+
+	app.draw ();
+}
