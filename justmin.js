@@ -45,6 +45,7 @@ var app = {
 		box: function (_) {
 			let box = app.create.object (_);
 				box.fill = _.fill || 'transparent';
+				box.z = _.z || 0;
 
 				box.draw = function () {
 					context.fillStyle = box.fill;
@@ -67,8 +68,17 @@ var app = {
 	},
 
 	draw: function () {
+		let picture  = {};
+
 		for (let id in app.object) {
-			app.object[id].draw ();
+			if (picture[app.object[id].z] == undefined) { picture[app.object[id].z] = []; }
+			picture[app.object[id].z].push (app.object[id]);
+		}
+
+		for (let z in picture) {
+			for (let n in picture[z]) {
+					picture[z][n].draw ();
+			}
 		}
 	},
 
@@ -106,14 +116,15 @@ app.scene.load = function () {
 		x: 100,
 		y: 100,
 		w: 100,
+		z: 1
 	}).load ();
 
 	app.create.box ({
 		fill: '#f00',
 		h: 100,
 		x: 150,
-		y: 100,
-		w: 100,
+		y: 150,
+		w: 100
 	}).load ();
 
 	app.draw ();
