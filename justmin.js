@@ -2,17 +2,11 @@ var window = window;
 	window.tick = 50;
 	window.time = 0;
 
-	window.events = {
-		set load (update) {
-			window.onmousedown = update;
-			window.onmousemove = update;
-			window.onmouseup = update;
-			window.on.tick = update;
-		}
-	}
-
 	window.load = function (update) {
-		window.events.load = update;
+		window.onmousedown = update;
+		window.onmousemove = update;
+		window.onmouseup = update;
+		window.on.tick = update;
 	}
 
 	window.on = {
@@ -36,7 +30,6 @@ var canvas = window.document.createElement ('canvas');
 		canvas.css ();
 		canvas.resize ();
 		window.document.body.appendChild (canvas);
-		window.onresize = canvas.resize;
 	}
 
 	canvas.resize = function () {
@@ -83,6 +76,10 @@ var app = {
 
 	load: function () {
 		window.load (app.update);
+		window.onresize = function () {
+			canvas.resize ();
+			app.draw ();
+		}
 		canvas.load ();
 		app.scene.load ();
 	},
@@ -107,6 +104,14 @@ app.scene.load = function () {
 		fill: '#000',
 		h: 100,
 		x: 100,
+		y: 100,
+		w: 100,
+	}).load ();
+
+	app.create.box ({
+		fill: '#f00',
+		h: 100,
+		x: 150,
 		y: 100,
 		w: 100,
 	}).load ();
