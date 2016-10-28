@@ -67,18 +67,45 @@ var app = {
 		}
 	},
 
-	draw: function () {
-		let picture  = {};
+	draw: function (anyway) {
+		let render = {};
+
+		if (anyway) { delete app.render; }
 
 		for (let id in app.object) {
-			if (picture[app.object[id].z] == undefined) { picture[app.object[id].z] = []; }
-			picture[app.object[id].z].push (app.object[id]);
+			if (app.object[id].z != undefined) {
+				if (render[app.object[id].z] == undefined) { render[app.object[id].z] = {}; }
+				render[app.object[id].z][id] = app.object[id];
+			}
 		}
 
-		for (let z in picture) {
-			for (let n in picture[z]) {
-					picture[z][n].draw ();
+		for (let z in render) {
+			for (let id in render[z]) {
+				if (app.render == undefined) { app.render = {}; }
+				if (app.render[z] == undefined) { app.render[z] = {}; }
+				if (app.render[z][id] == undefined) { app.render[z][id] = {}; }
+
+				if (app.get.hash (render[z][id]) != app.render[z][id]) {
+					render[z][id].draw ();
+				}
+
+				app.render[z][id] = app.get.hash (render[z][id]);
 			}
+		}
+	},
+
+	get: {
+		clone: function clone(obj) {
+		    if (null == obj || "object" != typeof obj) return obj;
+		    let copy = obj.constructor();
+		    for (let attr in obj) {
+		        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+		    }
+		    return copy;
+		},
+
+		hash: function (object) {
+			return '' + object.fill + object.h + object.w + object.x + object.y;
 		}
 	},
 
@@ -88,7 +115,7 @@ var app = {
 		window.load (app.update);
 		window.onresize = function () {
 			canvas.resize ();
-			app.draw ();
+			app.draw (true);
 		}
 		canvas.load ();
 		app.scene.load ();
@@ -101,7 +128,7 @@ var app = {
 	update: function (event) {
 		for (let id in app.object) {
 			for (let method in app.object[id]) {
-				if (method == event.type) { app.object[id][method] (event); }
+				if (method == event.type) { app.object[id][method] (event); app.draw (); }
 			}
 		}
 	}
@@ -124,7 +151,22 @@ app.scene.load = function () {
 		h: 100,
 		x: 150,
 		y: 150,
-		w: 100
+		w: 100,
+	}).load ();
+
+	app.create.box ({
+		fill: '#00f',
+		h: 100,
+		x: 200,
+		y: 200,
+		w: 100,
+		z: 1
+	}).load ();
+
+	app.create.object ({
+		tick: function () {
+			app.draw ();
+		}
 	}).load ();
 
 	app.draw ();
