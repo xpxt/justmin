@@ -86,15 +86,23 @@ var app = {
 				if (app.render[z][id] == undefined) { app.render[z][id] = {}; }
 
 				if (app.get.hash (render[z][id]) != app.render[z][id]) {
+					render[z][id].redraw = 0;
 					render[z][id].draw ();
+					app.render[z][id] = app.get.hash (render[z][id]);
+					app.zen (render[z][id]);
 				}
 
-				app.render[z][id] = app.get.hash (render[z][id]);
+
 			}
 		}
 	},
 
 	get: {
+		binbox: function (a, b) {
+			return ((Math.abs (a.x - b.x + 0.5 * (a.w - b.w)) <= 0.5 * Math.abs (a.w + b.w)) &&
+								(Math.abs (a.y - b.y + 0.5 * (a.h - b.h)) <= 0.5 * Math.abs (a.h + b.h)));
+		},
+
 		clone: function clone(obj) {
 		    if (null == obj || "object" != typeof obj) return obj;
 		    let copy = obj.constructor();
@@ -105,7 +113,26 @@ var app = {
 		},
 
 		hash: function (object) {
-			return '' + object.fill + object.h + object.w + object.x + object.y;
+			return '' + object.fill + object.h + object.redraw + object.w + object.x + object.y;
+		},
+
+		pinbox: function (p, b) {
+			return ((p.x >= b.x) && (p.x <= b.x + b.w) && (p.y >= b.y) && (p.y <= b.y + b.h));
+		},
+
+		r: function (a, b, c) {
+			let r = Math.random ();
+			if (b) {
+				r = Math.random () * (b - a) + a;
+			}
+			if (c) {
+				r = Math.floor (Math.random () * (b - a + 1)) + a;
+			}
+			if (Array.isArray (a)) {
+				let i = Math.floor (Math.random () * (a.length));
+				r = a[i];
+			}
+			return r;
 		}
 	},
 
@@ -131,6 +158,19 @@ var app = {
 				if (method == event.type) { app.object[id][method] (event); app.draw (); }
 			}
 		}
+	},
+
+	zen: function (object) {
+		for (let id in app.object) {
+			if (id != object.id) {
+				if (app.get.binbox (object, app.object[id])) {
+					if (object.z < app.object[id].z) {
+						app.object[id].redraw = 1;
+						app.draw ();
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -140,10 +180,10 @@ app.scene.load = function () {
 	app.create.box ({
 		fill: '#000',
 		h: 100,
-		x: 100,
-		y: 100,
+		x: 110,
+		y: 110,
 		w: 100,
-		z: 1
+		z: 2
 	}).load ();
 
 	app.create.box ({
@@ -159,6 +199,15 @@ app.scene.load = function () {
 		h: 100,
 		x: 200,
 		y: 200,
+		w: 100,
+		z: 1
+	}).load ();
+
+	app.create.box ({
+		fill: '#0f0',
+		h: 100,
+		x: 500,
+		y: 300,
 		w: 100,
 		z: 1
 	}).load ();
