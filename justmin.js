@@ -52,6 +52,12 @@ var app = {
 					context.fillRect (box.x, box.y, box.w, box.h);
 				}
 
+				box.move = function (x, y) {
+					box.x = x;
+					box.y = y;
+					app.zen (box);
+				}
+
 			return box;
 		},
 
@@ -89,7 +95,6 @@ var app = {
 					render[z][id].redraw = 0;
 					render[z][id].draw ();
 					app.render[z][id] = app.get.hash (render[z][id]);
-					app.zen (render[z][id]);
 				}
 
 
@@ -113,7 +118,7 @@ var app = {
 		},
 
 		hash: function (object) {
-			return '' + object.fill + object.h + object.redraw + object.w + object.x + object.y;
+			return '' + object.fill + object.h + object.redraw + object.w + object.x + object.y + object.z;
 		},
 
 		pinbox: function (p, b) {
@@ -164,10 +169,8 @@ var app = {
 		for (let id in app.object) {
 			if (id != object.id) {
 				if (app.get.binbox (object, app.object[id])) {
-					if (object.z < app.object[id].z) {
-						app.object[id].redraw = 1;
-						app.draw ();
-					}
+					app.object[id].redraw = 1;
+					app.draw ();
 				}
 			}
 		}
@@ -189,6 +192,9 @@ app.scene.load = function () {
 	app.create.box ({
 		fill: '#f00',
 		h: 100,
+		mousemove: function (event) {
+			this.move (event.x, event.y);
+		},
 		x: 150,
 		y: 150,
 		w: 100,
