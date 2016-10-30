@@ -70,6 +70,16 @@ var app = {
 				}
 
 			return object;
+		},
+
+		sprite: function (_) {
+			let sprite = app.create.box (_);
+
+				sprite.i = _.i || new Image ();
+
+				sprite.draw = function () {
+					context.drawImage (sprite.i, sprite.x, sprite.y, sprite.w, sprite.h);
+				}
 		}
 	},
 
@@ -84,6 +94,7 @@ var app = {
 				render[app.object[id].z][id] = app.object[id];
 			}
 		}
+
 
 		for (let z in render) {
 			for (let id in render[z]) {
@@ -169,8 +180,10 @@ var app = {
 		for (let id in app.object) {
 			if (id != object.id) {
 				if (app.get.binbox (object, app.object[id])) {
-					app.object[id].redraw = 1;
-					app.draw ();
+					if (app.object[id].redraw != 1) {
+						app.object[id].redraw = 1;
+						app.zen (app.object[id]);
+					}
 				}
 			}
 		}
@@ -186,7 +199,7 @@ app.scene.load = function () {
 		x: 110,
 		y: 110,
 		w: 100,
-		z: 2
+		z: 3
 	}).load ();
 
 	app.create.box ({
@@ -198,6 +211,7 @@ app.scene.load = function () {
 		x: 150,
 		y: 150,
 		w: 100,
+		z: 2
 	}).load ();
 
 	app.create.box ({
