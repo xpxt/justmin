@@ -53,9 +53,9 @@ var app = {
 				}
 
 				box.move = function (x, y) {
+					app.zen (box);
 					box.x = x;
 					box.y = y;
-					app.zen (box);
 				}
 
 			return box;
@@ -180,7 +180,7 @@ var app = {
 		for (let id in app.object) {
 			if (id != object.id) {
 				if (app.get.binbox (object, app.object[id])) {
-					if (app.object[id].redraw != 1) {
+					if (!app.object[id].redraw) {
 						app.object[id].redraw = 1;
 						app.zen (app.object[id]);
 					}
