@@ -80,6 +80,8 @@ var app = {
 				sprite.draw = function () {
 					context.drawImage (sprite.i, sprite.x, sprite.y, sprite.w, sprite.h);
 				}
+
+			return sprite;
 		}
 	},
 
@@ -132,6 +134,14 @@ var app = {
 			return '' + object.fill + object.h + object.redraw + object.w + object.x + object.y + object.z;
 		},
 
+		i: function (list) {
+			for (let name of list) {
+				let image = new Image ();
+					image.src = 'data/' + name + '.png';
+				app.i[name] = image;
+			}
+		},
+
 		pinbox: function (p, b) {
 			return ((p.x >= b.x) && (p.x <= b.x + b.w) && (p.y >= b.y) && (p.y <= b.y + b.h));
 		},
@@ -151,6 +161,8 @@ var app = {
 			return r;
 		}
 	},
+
+	i: {},
 
 	id: 0,
 
@@ -192,6 +204,8 @@ var app = {
 
 window.onload = app.load;
 
+app.get.i (['256']);
+
 app.scene.load = function () {
 	app.create.box ({
 		fill: '#000',
@@ -223,19 +237,13 @@ app.scene.load = function () {
 		z: 1
 	}).load ();
 
-	app.create.box ({
-		fill: '#0f0',
+	app.create.sprite ({
 		h: 100,
+		i: app.i['256'],
 		x: 500,
 		y: 300,
 		w: 100,
-		z: 1
-	}).load ();
-
-	app.create.object ({
-		tick: function () {
-			app.draw ();
-		}
+		z: 3
 	}).load ();
 
 	app.draw ();
