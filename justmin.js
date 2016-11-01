@@ -147,18 +147,24 @@ var app = {
 		},
 
 		r: function (a, b, c) {
-			let r = Math.random ();
-			if (b) {
-				r = Math.random () * (b - a) + a;
-			}
-			if (c) {
-				r = Math.floor (Math.random () * (b - a + 1)) + a;
-			}
 			if (Array.isArray (a)) {
 				let i = Math.floor (Math.random () * (a.length));
-				r = a[i];
+				return a[i];
 			}
-			return r;
+
+			if (a == 'color') {
+				return '#' + ((1<<24)*Math.random()|0).toString(16);
+			}
+
+			if (c) {
+				return Math.floor (Math.random () * (b - a + 1)) + a;
+			}
+
+			if (b) {
+				return Math.random () * (b - a) + a;
+			}
+
+			return Math.random ();
 		}
 	},
 
@@ -207,6 +213,22 @@ window.onload = app.load;
 app.get.i (['256']);
 
 app.scene.load = function () {
+	let col = 10;
+	let row = 10;
+	let h = canvas.height / row;
+	let w = canvas.width / col;
+	for (let x = col; x--;) {
+		for (let y = row; y--;) {
+			app.create.box ({
+				fill: app.get.r ('color'),
+				h: h - 0.25,
+				x: x * w,
+				y: y * h,
+				w: w - 0.25
+			}).load ();
+		}
+	}
+
 	app.create.box ({
 		fill: '#000',
 		h: 100,
@@ -218,13 +240,13 @@ app.scene.load = function () {
 
 	app.create.box ({
 		fill: '#f00',
-		h: 100,
+		h: 10,
 		mousemove: function (event) {
 			this.move (event.x, event.y);
 		},
 		x: 150,
 		y: 150,
-		w: 100,
+		w: 10,
 		z: 2
 	}).load ();
 
