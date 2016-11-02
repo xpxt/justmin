@@ -117,8 +117,8 @@ var app = {
 
 	get: {
 		binbox: function (a, b) {
-			return ((Math.abs (a.x - b.x + 0.5 * (a.w - b.w)) <= 0.5 * Math.abs (a.w + b.w)) &&
-								(Math.abs (a.y - b.y + 0.5 * (a.h - b.h)) <= 0.5 * Math.abs (a.h + b.h)));
+			return ((Math.abs (a.x - b.x + 0.5 * (a.w - b.w)) < 0.5 * Math.abs (a.w + b.w)) &&
+								(Math.abs (a.y - b.y + 0.5 * (a.h - b.h)) < 0.5 * Math.abs (a.h + b.h)));
 		},
 
 		clone: function clone(obj) {
@@ -143,7 +143,7 @@ var app = {
 		},
 
 		pinbox: function (p, b) {
-			return ((p.x >= b.x) && (p.x <= b.x + b.w) && (p.y >= b.y) && (p.y <= b.y + b.h));
+			return ((p.x > b.x) && (p.x < b.x + b.w) && (p.y > b.y) && (p.y < b.y + b.h));
 		},
 
 		r: function (a, b, c) {
@@ -215,17 +215,17 @@ app.get.i (['256']);
 app.scene.load = function () {
 	let col = 10;
 	let row = 10;
-	let h = canvas.height / row;
-	let w = canvas.width / col;
+	let h = (canvas.height / row) >> 0;
+	let w = (canvas.width / col) >> 0;
 	for (let x = col; x--;) {
 		for (let y = row; y--;) {
 			let c = '#000';
 			app.create.box ({
 				fill: c,
-				h: h - 0.25,
+				h: h,
 				x: x * w,
 				y: y * h,
-				w: w - 0.25
+				w: w
 			}).load ();
 		}
 	}
