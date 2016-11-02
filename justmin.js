@@ -219,7 +219,7 @@ app.scene.load = function () {
 	let w = canvas.width / col;
 	for (let x = col; x--;) {
 		for (let y = row; y--;) {
-			let c = app.get.r ('color') + '';
+			let c = '#000';
 			app.create.box ({
 				fill: c,
 				h: h - 0.25,
