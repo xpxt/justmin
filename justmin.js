@@ -61,6 +61,44 @@ var app = {
 			return box;
 		},
 
+		button: function (_) {
+			let button = app.create.sprite (_);
+				button.action = _.action || function () {};
+				button.active = false;
+				button.in = _.in || function () {};
+				button.out = _.out || function () {};
+
+				button.activate = function (event) {
+					if (app.get.pinbox ({ x: event.x, y: event.y }, button)) {
+						if (!button.active) {
+							button.active = true;
+							window.document.body.style.cursor = 'pointer';
+						}
+					} else {
+						if (button.active) {
+							button.active = false;
+							window.document.body.style.cursor = 'default';
+						}
+					}
+				}
+
+				button.click = function (event) {
+					if (app.get.pinbox ({ x: event.x, y: event.y }, button)) {
+						button.action ();
+					}
+				}
+
+				button.mousedown = function (event) {
+					button.click (event);
+				}
+
+				button.mousemove = function (event) {
+					button.activate (event);
+				}
+
+			return button;
+		},
+
 		object: function (_) {
 			let object = _ || {};
 				object.id = _.id || app.id++;
@@ -194,6 +232,12 @@ var app = {
 		}
 	},
 
+	wipe: function () {
+		app.object = {};
+		context.clearRect (0, 0, canvas.width, canvas.height);
+		window.document.body.style.cursor = 'default';
+	},
+
 	zen: function (object) {
 		for (let id in app.object) {
 			if (id != object.id) {
@@ -213,6 +257,8 @@ window.onload = app.load;
 app.get.i (['256']);
 
 app.scene.load = function () {
+	app.wipe ();
+
 	let col = 10;
 	let row = 10;
 	let h = (canvas.height / row) >> 0;
@@ -260,7 +306,10 @@ app.scene.load = function () {
 		z: 1
 	}).load ();
 
-	app.create.sprite ({
+	app.create.button ({
+		action: function () {
+			app.scene.start ();
+		},
 		h: 100,
 		i: app.i['256'],
 		x: 500,
@@ -270,4 +319,20 @@ app.scene.load = function () {
 	}).load ();
 
 	app.draw ();
+}
+
+app.scene.start = function () {
+	app.wipe ();
+
+	app.create.button ({
+		action: function () {
+			app.scene.load ();
+		},
+		h: 100,
+		i: app.i['256'],
+		x: 700,
+		y: 300,
+		w: 100,
+		z: 3
+	}).load ();
 }
