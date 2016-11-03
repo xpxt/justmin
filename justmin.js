@@ -40,8 +40,33 @@ var canvas = window.document.createElement ('canvas');
 var context = canvas.getContext ('2d');
 
 var app = {
+	a: {},
 
 	create: {
+		animation: function (_) {
+			let animation = app.create.sprite (_);
+				animation.a = _.a || [new Image()];
+				animation.delay = _.delay || window.delay;
+				animation.step = _.step || 0;
+				animation.time = _.time || window.time;
+
+				animation.animate = function () {
+					if (window.time - animation.time >= animation.delay) {
+
+						animation.time = window.time;
+						animation.step = (animation.step >= animation.a.length - 1) ? 0 : animation.step + 1;
+						animation.i = animation.a[animation.step];
+						animation.redraw = 1;
+					}
+				}
+
+				animation.tick = function () {
+					animation.animate ();
+				}
+
+			return animation;
+		},
+
 		box: function (_) {
 			let box = app.create.object (_);
 				box.fill = _.fill || 'transparent';
@@ -154,6 +179,17 @@ var app = {
 	},
 
 	get: {
+		a: function (list) {
+			for (let name in list) {
+				app.a[name] = [];
+				for (let i = 0; i < list[name]; i++) {
+					let image = new Image ();
+						image.src = 'data/' + name + ' ' + i + '.png';
+						app.a[name].push (image);
+				}
+			}
+		},
+
 		binbox: function (a, b) {
 			return ((Math.abs (a.x - b.x + 0.5 * (a.w - b.w)) < 0.5 * Math.abs (a.w + b.w)) &&
 								(Math.abs (a.y - b.y + 0.5 * (a.h - b.h)) < 0.5 * Math.abs (a.h + b.h)));
@@ -254,6 +290,8 @@ var app = {
 
 window.onload = app.load;
 
+app.get.a ({ '256': 26 });
+
 app.get.i (['256']);
 
 app.scene.load = function () {
@@ -314,6 +352,29 @@ app.scene.load = function () {
 		i: app.i['256'],
 		x: 500,
 		y: 300,
+		w: 100,
+		z: 3
+	}).load ();
+
+	app.create.animation ({
+		a: app.a['256'],
+		delay: 50,
+		h: 100,
+		i: app.i['256'],
+		x: 700,
+		y: 300,
+		w: 100,
+		z: 3
+	}).load ();
+
+	app.create.animation ({
+		a: app.a['256'],
+		delay: 50,
+		h: 100,
+		i: app.i['256'],
+		step: 12,
+		x: 600,
+		y: 200,
 		w: 100,
 		z: 3
 	}).load ();
