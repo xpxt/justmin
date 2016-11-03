@@ -382,7 +382,12 @@ app.scene.load = function () {
 		delay: 50,
 		h: 100,
 		i: app.i['256'],
-		get stop () { return stop; },
+		get stop () {
+			if (this.step >= this.a.length - 1) {
+				app.scene.start ();
+			}
+			return stop;
+		},
 		x: 700,
 		y: 300,
 		w: 100,
