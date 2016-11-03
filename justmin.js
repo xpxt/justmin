@@ -48,15 +48,17 @@ var app = {
 				animation.a = _.a || [new Image()];
 				animation.delay = _.delay || window.delay;
 				animation.step = _.step || 0;
+				animation.stop = _.stop || false;
 				animation.time = _.time || window.time;
 
 				animation.animate = function () {
-					if (window.time - animation.time >= animation.delay) {
-
-						animation.time = window.time;
-						animation.step = (animation.step >= animation.a.length - 1) ? 0 : animation.step + 1;
-						animation.i = animation.a[animation.step];
-						animation.redraw = 1;
+					if (!animation.stop) {
+						if (window.time - animation.time >= animation.delay) {
+							animation.time = window.time;
+							animation.step = (animation.step >= animation.a.length - 1) ? 0 : animation.step + 1;
+							animation.i = animation.a[animation.step];
+							animation.redraw = 1;
+						}
 					}
 				}
 
@@ -356,11 +358,31 @@ app.scene.load = function () {
 		z: 3
 	}).load ();
 
+	let stop = true;
+
+	app.create.button ({
+		action: function () {
+			if (stop) {
+				stop = false;
+			} else {
+				stop = true;
+			}
+		},
+		h: 100,
+		i: app.i['256'],
+		stop: false,
+		x: 500,
+		y: 100,
+		w: 100,
+		z: 3
+	}).load ();
+
 	app.create.animation ({
 		a: app.a['256'],
 		delay: 50,
 		h: 100,
 		i: app.i['256'],
+		get stop () { return stop; },
 		x: 700,
 		y: 300,
 		w: 100,
