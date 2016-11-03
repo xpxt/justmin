@@ -383,25 +383,10 @@ app.scene.load = function () {
 		h: 100,
 		i: app.i['256'],
 		get stop () {
-			if (this.step >= this.a.length - 1) {
-				app.scene.start ();
-			}
 			return stop;
 		},
-		x: 700,
-		y: 300,
-		w: 100,
-		z: 3
-	}).load ();
-
-	app.create.animation ({
-		a: app.a['256'],
-		delay: 50,
-		h: 100,
-		i: app.i['256'],
-		step: 12,
-		x: 600,
-		y: 200,
+		x: 500,
+		y: 100,
 		w: 100,
 		z: 3
 	}).load ();
