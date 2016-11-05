@@ -147,7 +147,31 @@ var app = {
 				}
 
 			return sprite;
+		},
+
+		text: function (_) {
+			let text = app.create.box (_);
+				text.color = _.color || '#000';
+				text.font = _.font || 'Arial';
+				text.size = _.size || '12';
+				text.text = _.text;
+				text.w = _.w || app.get.font.width (text);
+
+				text.draw = function () {
+					if (text.fill != 'transparent') {
+						context.fillStyle = text.fill;
+						context.fillRect (text.x, text.y - text.h, text.w, text.h);
+					}
+
+					context.fillStyle = text.color;
+					context.font = text.size + 'px ' + text.font;
+					context.textBaseline = 'bottom';
+					context.fillText (text.text, text.x, text.y);
+				}
+
+			return text;
 		}
+
 	},
 
 	draw: function (anyway) {
@@ -204,6 +228,13 @@ var app = {
 		        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
 		    }
 		    return copy;
+		},
+
+		font: {
+			width: function (text) {
+				context.font = text.size + 'px ' + text.font;
+				return context.measureText (text.text).width;
+			}
 		},
 
 		hash: function (object) {
@@ -405,7 +436,16 @@ app.scene.start = function () {
 		i: app.i['256'],
 		x: 700,
 		y: 300,
-		w: 100,
-		z: 3
+		w: 100
+	}).load ();
+
+	app.create.text ({
+		fill: '#000',
+		color: '#fff',
+		h: 16,
+		size: 16,
+		text: 'back',
+		x: 700,
+		y: 410
 	}).load ();
 }
