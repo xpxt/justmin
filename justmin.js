@@ -155,12 +155,11 @@ var app = {
 				text.font = _.font || 'Arial';
 				text.size = _.size || '12';
 				text.text = _.text;
-				text.w = _.w || app.get.font.width (text);
 
 				text.draw = function () {
 					if (text.fill != 'transparent') {
 						context.fillStyle = text.fill;
-						context.fillRect (text.x, text.y - text.h, text.w, text.h);
+						context.fillRect (text.x, text.y - text.size, app.get.font.width (text), text.size);
 					}
 
 					context.fillStyle = text.color;
@@ -296,9 +295,10 @@ var app = {
 	update: function (event) {
 		for (let id in app.object) {
 			for (let method in app.object[id]) {
-				if (method == event.type) { app.object[id][method] (event); app.draw (); }
+				if (method == event.type) { app.object[id][method] (event); }
 			}
 		}
+		app.draw ();
 	},
 
 	wipe: function () {
@@ -442,7 +442,6 @@ app.scene.start = function () {
 	app.create.text ({
 		fill: '#000',
 		color: '#fff',
-		h: 16,
 		size: 16,
 		text: 'back',
 		x: 700,
