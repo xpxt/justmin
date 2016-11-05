@@ -238,7 +238,7 @@ var app = {
 		},
 
 		hash: function (object) {
-			return '' + object.fill + object.h + object.redraw + object.w + object.x + object.y + object.z;
+			return '' + object.fill + object.h + object.redraw + object.text + object.w + object.x + object.y + object.z;
 		},
 
 		i: function (list) {
